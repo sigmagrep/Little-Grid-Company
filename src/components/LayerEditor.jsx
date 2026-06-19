@@ -1,8 +1,14 @@
 import React from "react";
 import { useStudio } from "../studio/StudioContext.jsx";
+import SpeedSlider from "./effects/SpeedSlider.jsx";
+import GradientPanel from "./effects/GradientPanel.jsx";
+import GlittersPanel from "./effects/GlittersPanel.jsx";
+import ElectronPanel from "./effects/ElectronPanel.jsx";
+import FliesPanel from "./effects/FliesPanel.jsx";
+import TracePanel from "./effects/TracePanel.jsx";
 
 export default function LayerEditor() {
-  const { sel, togglePick, paintTool, toggleGradient, cssStops, gradStops, shapeKind, setShapeKind, setPaintTool, SHAPE_KINDS, shapeFill, setShapeFill, eraseMode, currentColor, gradientControls, GRADIENT_TYPES, gradientPanel, glittersPanel, electronPanel, fliesPanel, tracePanel, removeBlinkStep, addBlinkColor, addBlinkNone, speedSlider, setBlinkStepFrames, clearBlinkCells, setSnakeLength, setSnakeSegment, fillSnakeBody, dragSwatchRef, updateSelectedLayer, arrMove, swatchStyle, removeSnakeStop, addSnakeStop, NONE_CHIP, RAINBOW, fadeSnakeBody, setSnakeSpeed, clamp, clearSnakePath } = useStudio();
+  const { sel, togglePick, paintTool, toggleGradient, cssStops, gradStops, shapeKind, setShapeKind, setPaintTool, SHAPE_KINDS, shapeFill, setShapeFill, eraseMode, currentColor, gradientControls, GRADIENT_TYPES, removeBlinkStep, addBlinkColor, addBlinkNone, setBlinkStepFrames, clearBlinkCells, setSnakeLength, setSnakeSegment, fillSnakeBody, dragSwatchRef, updateSelectedLayer, arrMove, swatchStyle, removeSnakeStop, addSnakeStop, NONE_CHIP, RAINBOW, fadeSnakeBody, setSnakeSpeed, clamp, clearSnakePath } = useStudio();
   return (
     <>
           {/* ---------- selected-layer editor ---------- */}
@@ -58,11 +64,11 @@ export default function LayerEditor() {
             </div>
           )}
 
-          {sel && GRADIENT_TYPES.indexOf(sel.type) >= 0 && gradientPanel(sel)}
-          {sel && sel.type === "glitters" && glittersPanel(sel)}
-          {sel && sel.type === "electron" && electronPanel(sel)}
-          {sel && sel.type === "flies" && fliesPanel(sel)}
-          {sel && sel.type === "trace" && tracePanel(sel)}
+          {sel && GRADIENT_TYPES.indexOf(sel.type) >= 0 && <GradientPanel layer={sel} />}
+          {sel && sel.type === "glitters" && <GlittersPanel layer={sel} />}
+          {sel && sel.type === "electron" && <ElectronPanel layer={sel} />}
+          {sel && sel.type === "flies" && <FliesPanel layer={sel} />}
+          {sel && sel.type === "trace" && <TracePanel layer={sel} />}
 
           {sel && sel.type === "blink" && (
             <div className="text-xs rounded-md bg-indigo-50 border border-indigo-200 p-3 space-y-3">
@@ -94,7 +100,7 @@ export default function LayerEditor() {
                   + None
                 </button>
               </div>
-              {speedSlider(sel.stepFrames, (f) => setBlinkStepFrames(f), 60)}
+              <SpeedSlider frames={sel.stepFrames} setFrames={(f) => setBlinkStepFrames(f)} fmax={60} />
               <div className="font-mono text-indigo-500">{sel.cells.size} cells</div>
               {sel.cells.size > 0 && (
                 <button onClick={clearBlinkCells} className="px-2 py-1 rounded-md border border-neutral-300 text-xs font-medium text-neutral-700 bg-white hover:bg-neutral-100">Clear cells</button>
@@ -161,7 +167,7 @@ export default function LayerEditor() {
                   <button onClick={fadeSnakeBody} className="px-2 py-1 rounded-md border border-indigo-300 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100">Apply to body</button>
                 </div>
               </div>
-              {speedSlider(sel.speed, (f) => setSnakeSpeed(f), 30, 0.5)}
+              <SpeedSlider frames={sel.speed} setFrames={(f) => setSnakeSpeed(f)} fmax={30} fmin={0.5} />
               <div className="rounded-md bg-white border border-indigo-200 p-2 space-y-2">
                 <label className="flex items-center gap-2 text-indigo-700 cursor-pointer">
                   <input type="checkbox" checked={!!sel.electric} onChange={(e) => updateSelectedLayer((s) => ({ ...s, electric: e.target.checked }))} style={{ accentColor: "#4f46e5" }} />
